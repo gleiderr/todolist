@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>To-Do List</title>
+
+</head>
+<body>
+    <script type="text/javascript">
+        function submeter(form) {
+            var tarefaKey = database.ref().child('tarefas').push().key
+            database.ref('tarefas/' + tarefaKey).set({
+                tarefa: form.tarefa.value,
+            });
+        }
+    </script>
+
+    <form id="form0">
+        <input type="text" name="tarefa" placeholder="Sua tarefa">
+        <button type="button" name="ok" onclick="submeter(this.form)">ok</button>
+    </form>
+
+    <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyDZko3XPnNnQ-zThQLzWfWImMRrNM_vyg0",
+        authDomain: "todolist-93f0e.firebaseapp.com",
+        databaseURL: "https://todolist-93f0e.firebaseio.com",
+        projectId: "todolist-93f0e",
+        storageBucket: "",
+        messagingSenderId: "16615280625"
+      };
+      var defaultApp = firebase.initializeApp(config);
+      var database = firebase.database();
+    </script>
+</body>
+</html>
