@@ -31,6 +31,8 @@ function appendForm(key, tarefa) {
 }
 
 function submeter(form) {
+    $(form).css({'background-color': 'yellow'});
+
     /* Se formulário não possui id, receberá como id a chave de seu registro recém gravado;*/
     if(!form.id) {
         form.id = database.ref().child('tarefas').push().key;
@@ -40,15 +42,36 @@ function submeter(form) {
     var update = {};
     update['/tarefas/' + form.id] = tarefa;
 
-    database.ref().update(update);
+    var promisse = database.ref().update(update);
+    promisse.then(okSubmit, erroSubmit);
+
+    function okSubmit(){
+        $(form).css({'background-color': 'lightgreen'});
+    }
+
+    function erroSubmit() {
+        $(form).css({'background-color': 'red'});
+    }
 }
 
 function excluir(form) {
+    $(form).css({'background-color': 'yellow'});
+
     /* Se houver id, exclui seu registro no banco de dados; */
     if(form.id) { 
         var update = {};
         update['/tarefas/' + form.id] = null;
-        database.ref().update(update);
+        var promisse = database.ref().update(update);
+        promisse.then(okExclusao, erroExclusao);
+    } else {
+        $(form).remove();
     }
-    $(form).remove();
+
+    function okExclusao(){
+        $(form).remove();
+    }
+
+    function erroExclusao() {
+        $(form).css({'background-color': 'red'});
+    }
 }
