@@ -14,12 +14,10 @@ $(document).ready(function() {
 /* Função para apensar campos de tarefas; */
 function appendForm(key, tarefa) {
     var form = $('<form></form>');
-    var tarefa = $('<input type="text" name="tarefa" placeholder="Título da tarefa">')
+    var tarefa = $('<input type="text" name="tarefa" placeholder="Título da tarefa" onchange="submeter(this.form)">')
                    .attr('value', tarefa);
-    var okButton = $('<button type="button" onclick="submeter(this.form)">ok</button>');
     var delButton = $('<button type="button" onclick="excluir(this.form)">del</button>');
     form.append(tarefa)
-        .append(okButton)
         .append(delButton);
 
     /* Se formulário referencia tarefa existente no banco de dados ele recebe como id sua chave no banco de dados; */
