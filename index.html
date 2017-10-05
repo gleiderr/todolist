@@ -8,7 +8,7 @@
     <div id="forms">
         <form>
             <input type="text" name="tarefa" placeholder="Nova tarefa">
-            <button type="button" name="ok" onclick="submeter(this.form)">ok</button>
+            <button type="button" onclick="submeter(this.form)">ok</button>
         </form>
     </div>
 
@@ -39,11 +39,13 @@
                                 </form>';
                     var tarefa = $('<input type="text" name="tarefa"></input>')
                                    .attr('value', tarefas[x].tarefa);
-                    var button = $('<button type="button" onclick="submeter(this.form)">ok</button>');
+                    var okButton = $('<button type="button" onclick="submeter(this.form)">ok</button>');
+                    var delButton = $('<button type="button" onclick="excluir(this.form)">del</button>');
                     var form = $('<form></form>')
                                  .attr('id', x);
                     form.append(tarefa)
-                        .append(button);
+                        .append(okButton)
+                        .append(delButton);
 
                     $('#forms').append(form);
                 }
@@ -61,6 +63,16 @@
             update['/tarefas/' + form.id] = tarefa;
 
             database.ref().update(update);
+        }
+
+        function excluir(form) {
+            if(form.id) {
+                var update = {};
+                update['/tarefas/' + form.id] = null;
+                database.ref().update(update);
+
+                $(form).remove();
+            }
         }
     </script>
 </body>
