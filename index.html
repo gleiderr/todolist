@@ -34,10 +34,16 @@
                 var tarefas = snapshot.val();
                 for(x in tarefas){
                     var formText = '<form id="' + x + '"> \
-                                    <input type="text" name="tarefa" value="' + tarefas[x].tarefa + '">\
+                                    <input  value="' + tarefas[x].tarefa + '">\
                                     <button type="button" onclick="submeter(this.form)">ok</button>\
                                 </form>';
-                    var form = $(formText);
+                    var tarefa = $('<input type="text" name="tarefa"></input>')
+                                   .attr('value', tarefas[x].tarefa);
+                    var button = $('<button type="button" onclick="submeter(this.form)">ok</button>');
+                    var form = $('<form></form>')
+                                 .attr('id', x);
+                    form.append(tarefa)
+                        .append(button);
 
                     $('#forms').append(form);
                 }
@@ -46,12 +52,15 @@
         });
 
         function submeter(form) {
-            var tarefasRef = database.ref().child('tarefas').push();
-            var tarefaKey = tarefasRef.push().key;
+            if(!form.id) {
+                form.id = database.ref().child('tarefas').push().key;
+            }
+            
+            var tarefa = { tarefa: form.tarefa.value,};
+            var update = {};
+            update['/tarefas/' + form.id] = tarefa;
 
-            tarefasRef.set({
-                tarefa: form.tarefa.value,
-            });
+            database.ref().update(update);
         }
     </script>
 </body>
