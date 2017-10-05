@@ -2,17 +2,18 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
     <title>To-Do List</title>
 </head>
 <body>
-    <div id="forms">
-        <form>
-            <input type="text" name="tarefa" placeholder="Nova tarefa">
-            <button type="button" onclick="submeter(this.form)">ok</button>
-        </form>
-    </div>
+    <!-- Componente para armazenar formulários -->
+    <div id="forms"></div>
 
+    <!-- Script jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- Script Firebase -->
     <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
     <script>
       // Initialize Firebase
@@ -28,52 +29,7 @@
       var database = firebase.database();
     </script>
 
-    <script type="text/javascript">
-        $(document).ready(function() {
-            database.ref('/tarefas/').once('value').then(function(snapshot) {
-                var tarefas = snapshot.val();
-                for(x in tarefas){
-                    var formText = '<form id="' + x + '"> \
-                                    <input  value="' + tarefas[x].tarefa + '">\
-                                    <button type="button" onclick="submeter(this.form)">ok</button>\
-                                </form>';
-                    var tarefa = $('<input type="text" name="tarefa"></input>')
-                                   .attr('value', tarefas[x].tarefa);
-                    var okButton = $('<button type="button" onclick="submeter(this.form)">ok</button>');
-                    var delButton = $('<button type="button" onclick="excluir(this.form)">del</button>');
-                    var form = $('<form></form>')
-                                 .attr('id', x);
-                    form.append(tarefa)
-                        .append(okButton)
-                        .append(delButton);
-
-                    $('#forms').append(form);
-                }
-            });
-
-        });
-
-        function submeter(form) {
-            if(!form.id) {
-                form.id = database.ref().child('tarefas').push().key;
-            }
-            
-            var tarefa = { tarefa: form.tarefa.value,};
-            var update = {};
-            update['/tarefas/' + form.id] = tarefa;
-
-            database.ref().update(update);
-        }
-
-        function excluir(form) {
-            if(form.id) {
-                var update = {};
-                update['/tarefas/' + form.id] = null;
-                database.ref().update(update);
-
-                $(form).remove();
-            }
-        }
-    </script>
+    <!-- Script próprio -->
+    <script src="./scripts/script.js"></script>
 </body>
 </html>
