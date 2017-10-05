@@ -3,23 +3,16 @@
 <head>
     <meta charset="utf-8">
     <title>To-Do List</title>
-
 </head>
 <body>
-    <script type="text/javascript">
-        function submeter(form) {
-            var tarefaKey = database.ref().child('tarefas').push().key
-            database.ref('tarefas/' + tarefaKey).set({
-                tarefa: form.tarefa.value,
-            });
-        }
-    </script>
+    <div id="forms">
+        <form>
+            <input type="text" name="tarefa" placeholder="Nova tarefa">
+            <button type="button" name="ok" onclick="submeter(this.form)">ok</button>
+        </form>
+    </div>
 
-    <form id="form0">
-        <input type="text" name="tarefa" placeholder="Sua tarefa">
-        <button type="button" name="ok" onclick="submeter(this.form)">ok</button>
-    </form>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
     <script>
       // Initialize Firebase
@@ -33,6 +26,33 @@
       };
       var defaultApp = firebase.initializeApp(config);
       var database = firebase.database();
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            database.ref('/tarefas/').once('value').then(function(snapshot) {
+                var tarefas = snapshot.val();
+                for(x in tarefas){
+                    var formText = '<form id="' + x + '"> \
+                                    <input type="text" name="tarefa" value="' + tarefas[x].tarefa + '">\
+                                    <button type="button" onclick="submeter(this.form)">ok</button>\
+                                </form>';
+                    var form = $(formText);
+
+                    $('#forms').append(form);
+                }
+            });
+
+        });
+
+        function submeter(form) {
+            var tarefasRef = database.ref().child('tarefas').push();
+            var tarefaKey = tarefasRef.push().key;
+
+            tarefasRef.set({
+                tarefa: form.tarefa.value,
+            });
+        }
     </script>
 </body>
 </html>
