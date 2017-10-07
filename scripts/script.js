@@ -1,31 +1,47 @@
 $(document).ready(function() {
-    appendForm('', ''); //Incluindo campo para adição de nova tarefa;
-
-    /* Recuperando tarefas já salvas; */
-    database.ref('/tarefas/').once('value').then(function(snapshot) {
-        var tarefas = snapshot.val();
-        for(key in tarefas){
-            appendForm(key, tarefas[key].tarefa);
+    /* Recuperando tarefas*/
+    database.ref('/tarefas/').orderByChild('id').once('value').then(function(snapshot) {
+        if (snapshot.exists()) {
+            snapshot.forEach(function(child) {
+                console.log(child.val(), child.key);
+                appendForm(child.key, child.val());
+            });
+        } else {
+            appendForm('', {tarefa: '', id: ''}); //Incluindo campo para adição de nova tarefa;
         }
     });
 
 });
 
 /* Função para apensar campos de tarefas; */
-function appendForm(key, tarefa) {
-    var form = $('<form></form>');
+function appendForm(key, registro, afterElement) {
+    var form = $('<form onsubmit="return false;"></form>').attr('id', key); //Submit desabilitado
+    var tarefaid = $('<input type="text" name="tarefaid">');
     var tarefa = $('<input type="text" name="tarefa" placeholder="Título da tarefa" onchange="submeter(this.form)">')
-                   .attr('value', tarefa);
+                    .attr('value', registro.tarefa);
     var delButton = $('<button type="button" onclick="excluir(this.form)">del</button>');
-    form.append(tarefa)
-        .append(delButton);
+    var addButton = $('<button type="button">add</button>')
+                      .on('click', function(){ appendForm('', {tarefa: '', id: ''}, this.form); });
 
-    /* Se formulário referencia tarefa existente no banco de dados ele recebe como id sua chave no banco de dados; */
-    if(key) {
-        form.attr('id', key)
+    form.append(tarefaid)
+        .append(tarefa)
+        .append(delButton)
+        .append(addButton);
+
+    if(afterElement){
+        $(afterElement).after(form);
+    } else {
+        $('#forms').append(form);
     }
-
-    $('#forms').append(form);
+    
+    if(!registro.id) {
+        var prevform = $(form).prev();
+        var nextform = $(form).next();
+        var previd = prevform.length ? parseFloat(prevform[0].tarefaid.value) : 0;
+        var nextid = nextform.length ? parseFloat(nextform[0].tarefaid.value) : Number.MAX_VALUE;
+        registro.id = (previd / 2 + nextid / 2); //Divisão em duas frações para previnir resultado infinity;
+    }
+    tarefaid.attr('value', registro.id);
 }
 
 function submeter(form) {
@@ -36,7 +52,8 @@ function submeter(form) {
         form.id = database.ref().child('tarefas').push().key;
     }
     
-    var tarefa = { tarefa: form.tarefa.value,};
+    var tarefa = { tarefa: form.tarefa.value,
+                   id: parseFloat(form.tarefaid.value)};
     var update = {};
     update['/tarefas/' + form.id] = tarefa;
 
