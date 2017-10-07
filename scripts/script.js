@@ -3,7 +3,6 @@ $(document).ready(function() {
     database.ref('/tarefas/').orderByChild('id').once('value').then(function(snapshot) {
         if (snapshot.exists()) {
             snapshot.forEach(function(child) {
-                console.log(child.val(), child.key);
                 appendForm(child.key, child.val());
             });
         } else {
@@ -16,17 +15,26 @@ $(document).ready(function() {
 /* Função para apensar campos de tarefas; */
 function appendForm(key, registro, afterElement) {
     var form = $('<form onsubmit="return false;"></form>').attr('id', key); //Submit desabilitado
-    var tarefaid = $('<input type="text" name="tarefaid">');
+    var tarefaid = $('<input type="hidden" name="tarefaid" readonly>');
     var tarefa = $('<input type="text" name="tarefa" placeholder="Título da tarefa" onchange="submeter(this.form)">')
                     .attr('value', registro.tarefa);
-    var delButton = $('<button type="button" onclick="excluir(this.form)">del</button>');
-    var addButton = $('<button type="button">add</button>')
-                      .on('click', function(){ appendForm('', {tarefa: '', id: ''}, this.form); });
+    var addButton = $('<button class="btn btn-success" type="button"></button>')
+                      .on('click', function(){ appendForm('', {tarefa: '', id: ''}, this.form); })
+                      .append('<span class="glyphicon glyphicon-plus"></span>');
+    var delButton = $('<button class="btn btn-danger" type="button" onclick="excluir(this.form)"></button>')
+                        .append('<span class="glyphicon glyphicon-trash"></span>');
 
-    form.append(tarefaid)
-        .append(tarefa)
+    form.append('<div class="form-group row"></div>').children()
+        .append('<div class="col-xs-9"></div>').children()
+        .append(tarefaid)
+        .append(tarefa).parent()
+        //.append('<div class=""></div>').children(':nth-child(2)')
+        .append('<span class="glyphicon glyphicon-ok"></span>')
+        .append(addButton)//.parent()
+        //.append('<div class=""></div>').children(':nth-child(3)')
         .append(delButton)
-        .append(addButton);
+        .parent();
+        //;
 
     if(afterElement){
         $(afterElement).after(form);
@@ -42,10 +50,15 @@ function appendForm(key, registro, afterElement) {
         registro.id = (previd / 2 + nextid / 2); //Divisão em duas frações para previnir resultado infinity;
     }
     tarefaid.attr('value', registro.id);
+
+    form.addClass('container-fluid');//.css({'margin-top': '5px'});
+    form.find(':text').addClass('form-control input-sm');
+    form.children().children(':button').css({'margin-left': '5px'});
+    form.find(':button').addClass('input-sm');
 }
 
 function submeter(form) {
-    $(form).css({'background-color': 'yellow'});
+    $(form).find('.glyphicon-ok').removeClass('glyphicon-ok').addClass('glyphicon-warning-sign');
 
     /* Se formulário não possui id, receberá como id a chave de seu registro recém gravado;*/
     if(!form.id) {
@@ -61,16 +74,16 @@ function submeter(form) {
     promisse.then(okSubmit, erroSubmit);
 
     function okSubmit(){
-        $(form).css({'background-color': 'lightgreen'});
+        $(form).find('.glyphicon-warning-sign').removeClass('glyphicon-warning-sign').addClass('glyphicon-ok');
     }
 
     function erroSubmit() {
-        $(form).css({'background-color': 'red'});
+        $(form).find('.glyphicon-warning-sign').removeClass('glyphicon-warning-sign').addClass('glyphicon-floppy-remove');
     }
 }
 
 function excluir(form) {
-    $(form).css({'background-color': 'yellow'});
+    $(form).find('.glyphicon-ok').removeClass('glyphicon-ok').addClass('glyphicon-warning-sign');
 
     /* Se houver id, exclui seu registro no banco de dados; */
     if(form.id) { 
@@ -87,6 +100,6 @@ function excluir(form) {
     }
 
     function erroExclusao() {
-        $(form).css({'background-color': 'red'});
+        $(form).find('.glyphicon-warning-sign').removeClass('glyphicon-warning-sign').addClass('glyphicon-floppy-remove');
     }
 }
