@@ -1,3 +1,14 @@
+<?php
+require_once 'token.php';
+
+error_reporting(E_ALL | E_STRICT);
+mb_internal_encoding('UTF-8');
+mb_http_output('UTF-8');
+
+session_start();
+echo false;
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,15 +22,22 @@
       .glyphicon-ok {
         color: greenyellow;
       }
-      .glyphicon-warning-sign {
+      .glyphicon-refresh {
         color: yellow;
+      }
+      .glyphicon-alert {
+        color: orangered;
       }
     </style>
 </head>
 <body class="container" style="background-color: darkorchid">
   <div class="page-header">
-    <h1 style="color: cyan">Lista de Tarefas</h1>
+    <h1 style="color: cyan">Tarefas</h1>
   </div>
+
+    <!-- Componentes controle de token de segurança -->
+    <div id="token" style="display: none"><?= token() ?></div>
+    <div id="tokenResponse"></div>
 
     <!-- Componente para armazenar formulários -->
     <div id="forms"></div>

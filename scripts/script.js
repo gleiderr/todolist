@@ -58,45 +58,57 @@ function appendForm(key, registro, afterElement) {
 }
 
 function submeter(form) {
-    $(form).find('.glyphicon-ok').removeClass('glyphicon-ok').addClass('glyphicon-warning-sign');
+    $(form).find('.glyphicon-ok').removeClass('glyphicon-ok').addClass('glyphicon-refresh');
 
-    /* Se formulário não possui id, receberá como id a chave de seu registro recém gravado;*/
-    if(!form.id) {
-        form.id = database.ref().child('tarefas').push().key;
-    }
-    
-    var tarefa = { tarefa: form.tarefa.value,
-                   id: parseFloat(form.tarefaid.value)};
-    var update = {};
-    update['/tarefas/' + form.id] = tarefa;
+    $.post('./tokenVerify.php', { token: $('#token').text(), }, function(data, status, xhr) {
+        if(data && xhr.readyState == 4 && xhr.status == 200) {
+            /* Se formulário não possui id, receberá como id a chave de seu registro recém gravado;*/
+            if(!form.id) {
+                form.id = database.ref().child('tarefas').push().key;
+            }
+            
+            var tarefa = { tarefa: form.tarefa.value,
+                           id: parseFloat(form.tarefaid.value)};
+            var update = {};
+            update['/tarefas/' + form.id] = tarefa;
 
-    var promisse = database.ref().update(update);
-    promisse.then(okSubmit, erroSubmit);
+            var promisse = database.ref().update(update);
+            promisse.then(okSubmit, erroSubmit);
+        } else {
+            erroSubmit();
+        }
+    });
 
     function okSubmit(){
-        $(form).find('.glyphicon-warning-sign').removeClass('glyphicon-warning-sign').addClass('glyphicon-ok');
+        $(form).find('.glyphicon-refresh').removeClass('glyphicon-refresh').addClass('glyphicon-ok');
     }
 
     function erroSubmit() {
-        $(form).find('.glyphicon-warning-sign').removeClass('glyphicon-warning-sign').addClass('glyphicon-floppy-remove');
+        $(form).find('.glyphicon-refresh').removeClass('glyphicon-refresh').addClass('glyphicon-alert');
     }
 }
 
 function excluir(form) {
-    $(form).find('.glyphicon-ok').removeClass('glyphicon-ok').addClass('glyphicon-warning-sign');
+    $(form).find('.glyphicon-ok').removeClass('glyphicon-ok').addClass('glyphicon-refresh');
 
-    /* Se houver id, exclui seu registro no banco de dados; */
-    if(form.id) { 
-        var update = {};
-        update['/tarefas/' + form.id] = null;
-        var promisse = database.ref().update(update);
-        promisse.then(okExclusao, erroExclusao);
-    } else {
-        $(form).remove();
-        if($('#forms').children().length === 0) {
-            appendForm('', {tarefa: '', id: ''}); //Incluindo campo para adição de nova tarefa;
+    $.post('./tokenVerify.php', { token: $('#token').text(), }, function(data, status, xhr) {
+        if(data && xhr.readyState == 4 && xhr.status == 200) {
+            /* Se houver id, exclui seu registro no banco de dados; */
+            if(form.id) { 
+                var update = {};
+                update['/tarefas/' + form.id] = null;
+                var promisse = database.ref().update(update);
+                promisse.then(okExclusao, erroExclusao);
+            } else {
+                $(form).remove();
+                if($('#forms').children().length === 0) {
+                    appendForm('', {tarefa: '', id: ''}); //Incluindo campo para adição de nova tarefa;
+                }
+            }
+        } else {
+            erroExclusao();
         }
-    }
+    });
 
     function okExclusao(){
         $(form).remove();
@@ -106,6 +118,6 @@ function excluir(form) {
     }
 
     function erroExclusao() {
-        $(form).find('.glyphicon-warning-sign').removeClass('glyphicon-warning-sign').addClass('glyphicon-floppy-remove');
+        $(form).find('.glyphicon-refresh').removeClass('glyphicon-refresh').addClass('glyphicon-alert');
     }
 }
