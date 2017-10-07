@@ -29,7 +29,13 @@ function appendForm(key, registro, afterElement) {
         .append(tarefaid)
         .append(tarefa).parent()
         //.append('<div class=""></div>').children(':nth-child(2)')
-        .append('<span class="glyphicon glyphicon-ok"></span>')
+        .append(function() { 
+            if (key) {
+                return '<span class="glyphicon glyphicon-ok"></span>'; 
+            } else {
+                return '<span class="glyphicon semglyphicon" style="width: 14px"></span>'; 
+            }
+        })
         .append(addButton)//.parent()
         //.append('<div class=""></div>').children(':nth-child(3)')
         .append(delButton)
@@ -58,7 +64,7 @@ function appendForm(key, registro, afterElement) {
 }
 
 function submeter(form) {
-    $(form).find('.glyphicon-ok').removeClass('glyphicon-ok').addClass('glyphicon-refresh');
+    $(form).find('.glyphicon-ok, .semglyphicon').removeClass('glyphicon-ok').addClass('glyphicon-refresh');
 
     $.post('./tokenVerify.php', { token: $('#token').text(), }, function(data, status, xhr) {
         if(data && xhr.readyState == 4 && xhr.status == 200) {
