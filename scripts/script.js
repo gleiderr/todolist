@@ -93,10 +93,16 @@ function excluir(form) {
         promisse.then(okExclusao, erroExclusao);
     } else {
         $(form).remove();
+        if($('#forms').children().length === 0) {
+            appendForm('', {tarefa: '', id: ''}); //Incluindo campo para adição de nova tarefa;
+        }
     }
 
     function okExclusao(){
         $(form).remove();
+        if($('#forms').children().length === 0) {
+            appendForm('', {tarefa: '', id: ''}); //Incluindo campo para adição de nova tarefa;
+        }
     }
 
     function erroExclusao() {
