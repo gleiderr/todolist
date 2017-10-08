@@ -25,5 +25,23 @@ Cada tarefa possui unicamente seu título e um identificador "ordinal" de ponto 
 
 Optei pela simplicidade ao apresentar apenas um campo textual como informação semântica de cada tarefa.
 
+### Comandos para o usuário
+Nesta aplicação as operaçes de Criação, Recuperação, Atualização e Exclusão são realizadas por apenas um campo de texto e dois botões. 
+- A criação de novas tarefas é realizada via botão '+' e a edição do campo da nova tarefa;
+- A Recuperação é realizada automaticamente ao abrir a página da aplicação;
+- A atualização é realizado tão somente pela modificação do campo correspondente;
+- E a exclusão é realizada via botão 'lixeira'.
 
+Cada uma destas operações é realizada de forma assíncrona e seu sucesso, andamento e eventual erro de gravação são sinalizados para o usuário via ícones de "check", "updating" e "atention", respectivamente.
 
+### Pseudo-verificação de segurança
+À cada gravação no banco de dados são realizadas chamadas AJAX via jQuery para validação de um token gerado pelo servidor PHP. Este token é armazenado na sessão de cada usuário conectado ao servidor e enviado para o servidor para que este valide que o formulário foi gerado pelo servidor sendo acessado.
+
+Reconheço que há falhas de segurança neste algoritmo, mas foi desenvolvido para apresentar algum código PHP para esta aplicação.
+
+## Conclusão
+O desenvolvimento desta aplicação expôs um pouco da minha lógica e do meu conhecimento nas ferramentas supracitadas, além de demonstrou minha capacidade de aprender novas tecnologias, visto que aprendi Firebase para nesta aplicação.
+
+Juntamente com isso, foi gratificando desenvolver esta simples aplicação.
+
+Obrigado aos avaliadores pela oportunidade.
