@@ -28,7 +28,6 @@ function appendForm(key, registro, afterElement) {
         .append('<div class="col-xs-9"></div>').children()
         .append(tarefaid)
         .append(tarefa).parent()
-        //.append('<div class=""></div>').children(':nth-child(2)')
         .append(function() { 
             if (key) {
                 return '<span class="glyphicon glyphicon-ok"></span>'; 
@@ -36,11 +35,8 @@ function appendForm(key, registro, afterElement) {
                 return '<span class="glyphicon semglyphicon" style="width: 14px"></span>'; 
             }
         })
-        .append(addButton)//.parent()
-        //.append('<div class=""></div>').children(':nth-child(3)')
-        .append(delButton)
-        .parent();
-        //;
+        .append(addButton)
+        .append(delButton);
 
     if(afterElement){
         $(afterElement).after(form);
@@ -57,7 +53,7 @@ function appendForm(key, registro, afterElement) {
     }
     tarefaid.attr('value', registro.id);
 
-    form.addClass('container-fluid');//.css({'margin-top': '5px'});
+    form.addClass('container-fluid');
     form.find(':text').addClass('form-control input-sm');
     form.children().children(':button').css({'margin-left': '5px'});
     form.find(':button').addClass('input-sm');
